@@ -18,8 +18,8 @@ def process_csv(file_path):
     # Plotting the counts in a bar chart
     plt.figure(figsize=(10, 6))
     ax = kommune_counts.plot(kind='bar', color='black')
-    plt.title('Antall PDF dokumenter per kommune')
-    plt.xlabel('Kommune')
+    plt.title(f'Antall PDF dokumenter per kommune (totalt: {kommune_counts.sum()})')
+    plt.xlabel('')
     plt.ylabel('Antall PDF dokumenter')
     plt.xticks(rotation=45)
 
