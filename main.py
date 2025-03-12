@@ -15,8 +15,8 @@ import re
 
 
 
-def saveNOU(title, url, baseurl, parentDir=Path(".")):
-    print(f"Saving {title}...")
+def saveNOU(url, baseurl, filePath: Path):
+    print(f"Saving {filePath}...")
     # Save the NOU to a file
 
     res = requests.get("https://" + baseurl + url)
@@ -27,22 +27,30 @@ def saveNOU(title, url, baseurl, parentDir=Path(".")):
 
     list = soup.find(class_="longdoc-download-list")
 
-    allDocLinks = list.find_all("a")
+    try:
+        allDocLinks = list.find_all("a")
 
-    for doc in allDocLinks:
-        docUrl = doc["href"]
-        if docUrl.endswith(".pdf"):
-            print(f"Found PDF: {docUrl}... Downloading")
-            pdfRes = requests.get("https://" + baseurl + docUrl)
-            if pdfRes.status_code != 200:
-                raise Exception("Failed to retrieve PDF")
-            filePath: Path = (parentDir / f"{title.replace(':', '')}.pdf").resolve()
-            print(filePath)
-            os.makedirs(filePath.parent, exist_ok=True)
-            with open(filePath, "wb") as f:
-                f.write(pdfRes.content)
-                print(f"Saved {filePath}")
-                break
+        for doc in allDocLinks:
+            docUrl = doc["href"]
+            if docUrl.endswith(".pdf"):
+                print(f"Found PDF: {docUrl}... Downloading")
+                pdfRes = requests.get("https://" + baseurl + docUrl)
+                if pdfRes.status_code != 200:
+                    raise Exception("Failed to retrieve PDF")
+
+                os.makedirs(filePath.parent, exist_ok=True)
+                with open(filePath, "wb") as f:
+                    f.write(pdfRes.content)
+                    print(f"Saved {filePath}")
+                    break
+
+
+    except Exception as e:
+        print(f"Something went wrong with this NOU: {'https://' + baseurl + url}")
+        print(e)
+
+        with open("errors.txt", "a") as f:
+            f.write(f"Something went wrong with this NOU: {'https://' + baseurl + url}\n")
 
 
 def generateTemplate(url: str):
@@ -54,7 +62,8 @@ def generateTemplate(url: str):
         return url + "?page={page}"
 
 
-def main(url: str, parentDir: Path = Path(".")):
+
+def scrapeURL(url: str, parentDir: Path = Path()):
     currentPage = 1
     endPageFound = False
 
@@ -69,7 +78,7 @@ def main(url: str, parentDir: Path = Path(".")):
             print(f"Failed to retrieve page {currentPage}")
             break
 
-        soup = BeautifulSoup(res.content, "html.parser")
+        soup = BeautifulSoup(res.text, "html.parser")
 
         # Check if the end of the pages is reached
         noResult = soup.find(class_="title gtm-search-zeroresults")
@@ -85,19 +94,24 @@ def main(url: str, parentDir: Path = Path(".")):
         listItems = results.find_all(class_="listItem")
         for item in listItems:
             titleElement = item.find("h2")
-            title = titleElement.text.strip()
+            title = re.sub(r"[\n\r\?]", "", titleElement.text.strip())
             link = titleElement.find("a")["href"]
             baseurl = url.hostname
             print(f"Found: {title}")
+            
+            
+            filePath: Path = (parentDir / f"{title.replace(':', '')}.pdf")
+           
+            if filePath.exists():
+                print(f"File {filePath} already exists, skipping")
+                break
 
-            saveNOU(title, link, baseurl, parentDir)
 
-            endPageFound = True
-            sleep(1)
+            saveNOU(link, baseurl, filePath)
 
         currentPage += 1
 
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    typer.run(scrapeURL)
