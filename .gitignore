@@ -3,7 +3,6 @@ NOUs
 .vscode
 jobdirs
 **/__pycache__
-scrapy_kommune_pdf_scraper/*.csv
-scrapy_kommune_pdf_scraper/*.log
+*.log
 test
 
