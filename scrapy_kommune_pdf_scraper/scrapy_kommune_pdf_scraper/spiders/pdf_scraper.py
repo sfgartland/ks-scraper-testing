@@ -23,7 +23,7 @@ class PdfSpider(Spider):
             self.municipalities = list(json.load(f))
 
         self.selectedMunicipalities = [
-            m for m in self.municipalities if m["Fylke"] == "Finnmark"
+            m for m in self.municipalities if m["Fylke"] != "Finnmark"
         ]
 
         # try:

@@ -1,5 +1,6 @@
 /ex.html
 NOUs
+scrapy_kommune_pdf_scraper/data
 .vscode
 jobdirs
 **/__pycache__
