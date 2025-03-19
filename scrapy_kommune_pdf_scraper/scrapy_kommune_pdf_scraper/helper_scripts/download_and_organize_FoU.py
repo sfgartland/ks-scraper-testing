@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 from collections import defaultdict
 import shutil
+import time
 
 
 app = typer.Typer()
@@ -60,16 +61,14 @@ def download_files(
 
     # Iterate over each object in the array
     for item in data:
-        
         file_links = item.get('file_links', [])
-
 
         for file_url in file_links:
             file_path, file_name, project_dir = generateFileTargetPath(file_url, item, data_dir)
 
             # Check if the file already exists
             if os.path.exists(file_path):
-                # print(f"Skipped {file_name}: Already exists in {project_dir}")
+                print(f"Skipped {file_name}: Already exists in {project_dir}")
                 continue
 
             try:
@@ -197,7 +196,7 @@ def display_counts(counts):
 def visualize_data(counts):
     # Configure subplots with ample space for each plot
     fig, axs = plt.subplots(1, 2, figsize=(14, 6))
-    fig.suptitle("Data Visualization")
+    fig.suptitle("Visualisering av mengde rapporter (ikke mengde dokumenter)")
 
     # Theme Tag visualization
     theme_tags = counts['themeTagCounts']
