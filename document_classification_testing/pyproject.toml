@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "document-classification-testing"
+version = "0.1.0"
+description = ""
+authors = ["Severin Gartland <sfgartland@hotmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+datasets = "^3.4.1"
+torch = "^2.6.0"
+transformers = "^4.49.0"
+pdfplumber = "^0.11.5"
+pdf2image = "^1.17.0"
+pillow = "^11.1.0"
+pytesseract = "^0.3.13"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
