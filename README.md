@@ -2,7 +2,7 @@
 
 Laster ned alle KUDOS-rapportene funnet ved bruk av søkeverktøyet på KUDOS-nettstedet. For å bruke det, gjør først et søk på KUDOS-nettstedet, og kopier deretter URL-en som et argument inn i følgende kommando:
 
-`poetry run python main.py <url> --output-dir <output_folder> --log-level <log_level>`
+`poetry run python KUDOS_tool/main.py <url> --output-dir <output_folder> --log-level <log_level>`
 
 `--output-dir` er valgfri, og standard til gjeldende katalog.
 `--log-level` er valgfri, og standard til INFO. Sett til DEBUG for mer detaljert output.
